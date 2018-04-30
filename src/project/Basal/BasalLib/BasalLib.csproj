@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\lib\Quaternion.cs">
+      <Link>Quaternion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\lib\UnitVector3f.cs">
+      <Link>UnitVector3f.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\lib\Vector3f.cs">
+      <Link>Vector3f.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>
