@@ -27,184 +27,207 @@ using System;
 
 namespace Piot.Basal
 {
-	public struct Quaternion
-	{
-		Vector3f axis;
-		public float w;
+    public struct Quaternion
+    {
+        Vector3f axis;
+        public int w;
 
-		public Quaternion(float x, float y, float z, float w)
-		{
-			axis = new Vector3f(x, y, z);
-			this.w = w;
-		}
+        public Quaternion(int x, int y, int z, int w)
+        {
+            axis = new Vector3f(x, y, z);
+            this.w = w;
+        }
 
-		public Quaternion(Vector3f axis, float w)
-		{
-			this.axis = axis;
-			this.w = w;
-		}
+        public Quaternion(Vector3f axis, int w)
+        {
+            this.axis = axis;
+            this.w = w;
+        }
 
-		public bool SameRepresentation(Quaternion q)
-		{
-			var same = (axis.AlmostEqual(q.axis) && Utility.FloatAlmostEqual(w, q.w)) ||
-			           (axis.AlmostEqual(-q.axis) && Utility.FloatAlmostEqual(w, -q.w));
+        public void ToFloats(out float x, out float y, out float z, out float outW)
+        {
+            axis.ToFloats(out x, out y, out z);
+            outW = Utility.FixedPointToFloat(w);
+        }
 
-			return same;
-		}
+        public static Quaternion FromFloats(float x, float y, float z, float w)
+        {
+            var axis = Vector3f.FromFloats(x, y, z);
+            return new Quaternion(axis, Utility.FloatToFixedPoint(w));
+        }
 
-		public float this[int key]
-		{
-			get
-			{
-				switch (key)
-				{
-				case 0:
-					return axis.x;
-				case 1:
-					return axis.y;
-				case 2:
-					return axis.z;
-				case 3:
-					return w;
-				default:
-					throw new IndexOutOfRangeException();
-				}
-			}
-		}
 
-		public Vector3f Axis
-		{
-			get
-			{
-				return axis;
-			}
-		}
+        public bool SameRepresentation(Quaternion q)
+        {
+            var same = (axis.IsEqual(q.axis) && Utility.FloatAlmostEqual(w, q.w)) ||
+                       (axis.IsEqual(-q.axis) && Utility.FloatAlmostEqual(w, -q.w));
 
-		public float Dot(Quaternion other)
-		{
-			return axis.Dot(other.axis) * w * other.w;
-		}
+            return same;
+        }
 
-		public static Quaternion operator * (Quaternion a, Quaternion b)
-		{
-			Quaternion r;
+        public int this[int key]
+        {
+            get
+            {
+                switch (key)
+                {
+                    case 0:
+                        return axis.x;
+                    case 1:
+                        return axis.y;
+                    case 2:
+                        return axis.z;
+                    case 3:
+                        return w;
+                    default:
+                        throw new IndexOutOfRangeException();
+                }
+            }
+        }
 
-			r.w = a.w * b.w - a.axis.Dot(b.axis);
-			var va = a.axis.Cross(b.axis);
-			var vb = a.axis * b.w;
-			var vc = b.axis * a.w;
-			va = va + vb;
-			r.axis = va + vc;
+        public Vector3f Axis
+        {
+            get
+            {
+                return axis;
+            }
+        }
 
-			return r.Normalize();
-		}
+        public int Magnitude
+        {
+            get
+            {
+                return (int)Math.Sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z + w * w);
+            }
+        }
 
-		public Quaternion Slerp(Quaternion other, float t)
-		{
-			Quaternion r;
-			var invertedT = 1 - t;
-			var dot = Dot (other);
+        /*
 
-			if (dot < 0)
-			{
-				dot = -dot;
-				r = -other;
-			}
-			else
-			{
-				r = other;
-			}
+        public float Dot(Quaternion other)
+        {
+            return axis.Dot(other.axis) * w * other.w;
+        }
 
-			if (dot < 0.98f)
-			{
-				var angle = Math.Acos (dot);
-				var first = this * (float)Math.Sin (angle * invertedT);
-				var second = r * (float)Math.Sin (angle * t);
-				return (first + second) / (float)Math.Sin (angle);
-			}
+        public static Quaternion operator *(Quaternion a, Quaternion b)
+        {
+            Quaternion r;
 
-			return Lerp (other, t);
-		}
+            r.w = a.w * b.w - a.axis.Dot(b.axis);
+            var va = a.axis.Cross(b.axis);
+            var vb = a.axis * b.w;
+            var vc = b.axis * a.w;
+            va = va + vb;
+            r.axis = va + vc;
 
-		public float Magnitude
-		{
-			get
-			{
-				return (float)Math.Sqrt (axis.x * axis.x + axis.y * axis.y + axis.z * axis.z + w * w);
-			}
-		}
-		public Quaternion Normalize()
-		{
-			return this / Magnitude;
-		}
+            return r.Normalize();
+        }
 
-		public Quaternion Inverse()
-		{
-			Quaternion result;
 
-			result.axis = -axis;
-			result.w = w;
+public Quaternion Slerp(Quaternion other, float t)
+{
+    Quaternion r;
+    var invertedT = 1 - t;
+    var dot = Dot(other);
 
-			return result;
-		}
+    if (dot < 0)
+    {
+        dot = -dot;
+        r = -other;
+    }
+    else
+    {
+        r = other;
+    }
 
-		public static Quaternion FromAxisAngle(Vector3f axis, float angle)
-		{
-			var s = (float)Math.Sin(angle / 2);
-			var x = axis.x * s;
-			var y = axis.y * s;
-			var z = axis.z * s;
-			var w = (float)Math.Cos(angle / 2);
+    if (dot < 0.98f)
+    {
+        var angle = Math.Acos(dot);
+        var first = this * (float)Math.Sin(angle * invertedT);
+        var second = r * (float)Math.Sin(angle * t);
+        return (first + second) / (float)Math.Sin(angle);
+    }
 
-			return new Quaternion(x, y, z, w);
-		}
+    return Lerp(other, t);
+}
 
-		public void ToAxisAngle(out Vector3f resultAxis, out float resultAngle)
-		{
-			resultAngle = 2.0f * (float)Math.Acos(w);
+public Quaternion Normalize()
+{
+    return this / Magnitude;
+}
 
-			var s = (float)Math.Sqrt(1.0f - w * w);
+public Quaternion Inverse()
+{
+    Quaternion result;
 
-			if (s < 0.001f)
-			{
-				resultAxis = axis;
-			}
-			else
-			{
-				resultAxis = axis / s;
-			}
-		}
+    result.axis = -axis;
+    result.w = w;
 
-		public Quaternion Lerp (Quaternion other, float t)
-		{
-			var invertedT = 1 - t;
+    return result;
+}
+        public static Quaternion FromAxisAngle(Vector3f axis, float angle)
+        {
+            var s = (float)Math.Sin(angle / 2);
+            var x = axis.x * s;
+            var y = axis.y * s;
+            var z = axis.z * s;
+            var w = (float)Math.Cos(angle / 2);
 
-			return (this * invertedT + other * t).Normalize ();
-		}
+            return new Quaternion(x, y, z, w);
+        }
 
-		public static Quaternion operator * (Quaternion a, float scale)
-		{
-			return new Quaternion (a.axis * scale, a.w * scale);
-		}
+        public void ToAxisAngle(out Vector3f resultAxis, out float resultAngle)
+        {
+            resultAngle = 2.0f * (float)Math.Acos(w);
 
-		public static Quaternion operator / (Quaternion a, float scale)
-		{
-			return new Quaternion (a.axis / scale, a.w / scale);
-		}
+            var s = (float)Math.Sqrt(1.0f - w * w);
 
-		public static Quaternion operator + (Quaternion a, Quaternion b)
-		{
-			return new Quaternion (a.axis + b.axis, a.w + b.w);
-		}
+            if (s < 0.001f)
+            {
+                resultAxis = axis;
+            }
+            else
+            {
+                resultAxis = axis / s;
+            }
+        }
+public Quaternion Lerp(Quaternion other, float t)
+{
+    var invertedT = 1 - t;
 
-		public static Quaternion operator - (Quaternion a)
-		{
-			return new Quaternion (-a.axis, -a.w);
-		}
+    return (this * invertedT + other * t).Normalize();
+}
+*/
 
-		public override string ToString()
-		{
-			return string.Format("[quaternion x:{0}, y:{1}, z:{2} w:{3}]", axis.x, axis.y, axis.z, w);
-		}
-	}
+        public static Quaternion operator *(Quaternion a, int scale)
+        {
+            return new Quaternion(a.axis * scale, a.w * scale / Utility.FixedPointFactor);
+        }
+
+        public static Quaternion operator /(Quaternion a, int scale)
+        {
+            return new Quaternion(a.axis * Utility.FixedPointFactor / scale, a.w * Utility.FixedPointFactor / scale);
+        }
+
+        public static Quaternion operator +(Quaternion a, Quaternion b)
+        {
+            return new Quaternion(a.axis + b.axis, a.w + b.w);
+        }
+
+        public static Quaternion operator -(Quaternion a)
+        {
+            return new Quaternion(-a.axis, -a.w);
+        }
+
+        public override string ToString()
+        {
+            float x, y, z, outW;
+            ToFloats(out x, out y, out z, out outW);
+            return string.Format("[quaternion x:{0}, y:{1}, z:{2} w:{3}]", x, y, z, outW);
+        }
+
+        public string DebugString()
+        {
+            return string.Format("[quaternion fixed x:{0}, y:{1}, z:{2} w:{3}]", axis.x, axis.y, axis.z, w);
+        }
+    }
 }

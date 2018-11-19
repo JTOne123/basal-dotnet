@@ -27,83 +27,113 @@ using System;
 
 namespace Piot.Basal
 {
-	public class Utility
-	{
-		public static bool FloatAlmostEqual(float a, float b)
-		{
-			return Math.Abs(a - b) < 0.0005f;
-		}
-	}
 
-	public struct Vector3f
-	{
-		public float x;
-		public float y;
-		public float z;
+    public class Utility
+    {
+        public const int FixedPointFactor = 1000;
+        public static bool FloatAlmostEqual(int a, int b)
+        {
+            return Math.Abs(a - b) < 5f;
+        }
 
-		public Vector3f(float x, float y, float z)
-		{
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
+        public static float FixedPointToFloat(int x)
+        {
+            return x / Utility.FixedPointFactor;
+        }
+        public static int FloatToFixedPoint(float x)
+        {
+            return (int)(x * Utility.FixedPointFactor);
+        }
+    }
 
-		public override string ToString()
-		{
-			return string.Format("[vector3f x:{0}, y:{1}, z:{2}]", x, y, z);
-		}
+    public struct Vector3f
+    {
+        public int x;
+        public int y;
+        public int z;
 
-		public static Vector3f operator - (Vector3f a, Vector3f b)
-		{
-			return new Vector3f (a.x - b.x, a.y - b.y, a.z - b.z);
-		}
+        public Vector3f(int x, int y, int z)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
 
-		public static Vector3f operator + (Vector3f a, Vector3f b)
-		{
-			return new Vector3f (a.x + b.x, a.y + b.y, a.z + b.z);
-		}
+        public static Vector3f FromFloats(float x, float y, float z)
+        {
+            return new Vector3f((int)(x * Utility.FixedPointFactor), (int)(y * Utility.FixedPointFactor), (int)(z * Utility.FixedPointFactor));
+        }
 
-		public static Vector3f operator * (Vector3f a, float magnitude)
-		{
-			return new Vector3f (a.x * magnitude, a.y * magnitude, a.z * magnitude);
-		}
+        public void ToFloats(out float outX, out float outY, out float outZ)
+        {
+            outX = Utility.FixedPointToFloat(x);
+            outY = Utility.FixedPointToFloat(y);
+            outZ = Utility.FixedPointToFloat(z);
+        }
 
-		public static Vector3f operator /(Vector3f a, float magnitude)
-		{
-			return new Vector3f(a.x / magnitude, a.y / magnitude, a.z / magnitude);
-		}
 
-		public static Vector3f Interpolate(Vector3f a, Vector3f b, float factor)
-		{
-			return a + (b - a) * factor;
-		}
+        public override string ToString()
+        {
+            float x, y, z;
+            ToFloats(out x, out y, out z);
+            return string.Format("[vector3f x:{0}, y:{1}, z:{2}]", x, y, z);
+        }
 
-		public float Dot(Vector3f other)
-		{
-			return x * other.x + y * other.y + z * other.z;
-		}
+        public string DebugString()
+        {
+            return string.Format("[vector3f fixed x:{0}, y:{1}, z:{2}]", x, y, z);
+        }
+        public static Vector3f operator -(Vector3f a, Vector3f b)
+        {
+            return new Vector3f(a.x - b.x, a.y - b.y, a.z - b.z);
+        }
 
-		public Vector3f Cross(Vector3f other)
-		{
-			Vector3f result;
+        public static Vector3f operator +(Vector3f a, Vector3f b)
+        {
+            return new Vector3f(a.x + b.x, a.y + b.y, a.z + b.z);
+        }
 
-			result.x = y * other.z - z * other.y;
-			result.y = z * other.x - x * other.z;
-			result.z = x * other.y - y * other.x;
+        public static Vector3f operator *(Vector3f a, int magnitude)
+        {
+            return new Vector3f(a.x * magnitude, a.y * magnitude, a.z * magnitude);
+        }
 
-			return result;
-		}
+        public static Vector3f operator /(Vector3f a, int magnitude)
+        {
+            return new Vector3f(a.x / magnitude, a.y / magnitude, a.z / magnitude);
+        }
 
-		public static Vector3f operator -(Vector3f a)
-		{
-			return new Vector3f(-a.x, -a.y, -a.z);
-		}
+        public static Vector3f Interpolate(Vector3f a, Vector3f b, int factor)
+        {
+            return a + (b - a) * factor / Utility.FixedPointFactor;
+        }
 
-		public bool AlmostEqual(Vector3f other)
-		{
-			return Utility.FloatAlmostEqual (x, other.x)
-			       && Utility.FloatAlmostEqual (y, other.y)
-			       && Utility.FloatAlmostEqual (z, other.z);
-		}
-	}
+        public int Dot(Vector3f other)
+        {
+            return x * other.x + y * other.y + z * other.z;
+        }
+
+        public Vector3f Cross(Vector3f other)
+        {
+            Vector3f result;
+
+            result.x = y * other.z - z * other.y;
+            result.y = z * other.x - x * other.z;
+            result.z = x * other.y - y * other.x;
+
+            return result;
+        }
+
+        public static Vector3f operator -(Vector3f a)
+        {
+            return new Vector3f(-a.x, -a.y, -a.z);
+        }
+
+        public bool IsEqual(Vector3f other)
+        {
+            return x == other.x
+                   && y == other.y
+                   && z == other.z;
+        }
+    }
 }

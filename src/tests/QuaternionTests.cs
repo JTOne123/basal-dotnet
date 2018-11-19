@@ -28,14 +28,14 @@ using Xunit;
 
 namespace Tests
 {
-	public class QuaternionTests
-	{
-		[Fact]
-		public static void Magnitude()
-		{
-			var q = new Quaternion(-0.003f, -0.947f, 0.316f, 0.062f);
+    public class QuaternionTests
+    {
+        [Fact]
+        public static void Magnitude()
+        {
+            var q = Quaternion.FromFloats(-0.003f, -0.947f, 0.316f, 0.062f);
 
-			Assert.Equal(1.000, q.Magnitude, 3);
-		}
-	}
+            Assert.Equal(1 * Utility.FixedPointFactor, q.Magnitude);
+        }
+    }
 }

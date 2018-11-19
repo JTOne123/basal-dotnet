@@ -25,15 +25,15 @@ SOFTWARE.
 */
 namespace Piot.Basal
 {
-	public struct UnitVector3f
-	{
-		public float x;
-		public float y;
-		public float z;
+    public struct UnitVector3f
+    {
+        public int x;
+        public int y;
+        public int z;
 
-		public override string ToString()
-		{
-			return string.Format("[unitvector3f x:{0}, y:{1}, z:{2}]", x, y, z);
-		}
-	}
+        public override string ToString()
+        {
+            return string.Format("[unitvector3f x:{0}, y:{1}, z:{2}]", x, y, z);
+        }
+    }
 }
