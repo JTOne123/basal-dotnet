@@ -38,7 +38,7 @@ namespace Piot.Basal
 
         public static float FixedPointToFloat(int x)
         {
-            return x / Utility.FixedPointFactor;
+            return x / (float)Utility.FixedPointFactor;
         }
         public static int FloatToFixedPoint(float x)
         {
