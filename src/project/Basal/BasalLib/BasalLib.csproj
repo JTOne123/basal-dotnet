@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Basal</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Piot</Authors>
+    <Description>Basic geometry types</Description>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageProjectUrl> https://github.com/piot/basal-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/piot/basal-dotnet.git</RepositoryUrl>
+    <PacketReleaseNotes>Initial commit.</PacketReleaseNotes>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
