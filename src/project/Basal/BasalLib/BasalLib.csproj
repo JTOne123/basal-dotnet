@@ -1,30 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Basal</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Piot</Authors>
     <Description>Basic geometry types</Description>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <PackageProjectUrl> https://github.com/piot/basal-dotnet</PackageProjectUrl>
+    <PackageLicense>MIT</PackageLicense>
+    <PackageProjectUrl>https://github.com/piot/basal-dotnet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/piot/basal-dotnet.git</RepositoryUrl>
     <PacketReleaseNotes>Initial commit.</PacketReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Remove="Class1.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\..\lib\Quaternion.cs">
+    <Compile Include="../../../lib/Quaternion.cs">
       <Link>Quaternion.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\lib\UnitVector3f.cs">
+    <Compile Include="../../../lib/UnitVector3f.cs">
       <Link>UnitVector3f.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\lib\Vector3f.cs">
+    <Compile Include="../../../lib/Vector3f.cs">
       <Link>Vector3f.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup></ItemGroup>
 </Project>
