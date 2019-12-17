@@ -21,6 +21,9 @@
     <Compile Include="../../../lib/Vector3f.cs">
       <Link>Vector3f.cs</Link>
     </Compile>
+    <Compile Include="../../../lib/Vector2f.cs">
+      <Link>Vector2f.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup></ItemGroup>
 </Project>
