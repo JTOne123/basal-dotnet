@@ -1,9 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasalLib", "BasalLib\BasalLib.csproj", "{71C25D3B-B0DF-46F6-87D9-6A4DF4EC97D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasalLib", "lib\BasalLib.csproj", "{71C25D3B-B0DF-46F6-87D9-6A4DF4EC97D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasalTests", "BasalTests\BasalTests.csproj", "{D39CFFC5-2EC3-4449-A72F-BF871BC661A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasalTests", "tests\BasalTests.csproj", "{D39CFFC5-2EC3-4449-A72F-BF871BC661A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
